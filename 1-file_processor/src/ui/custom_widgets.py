@@ -15,7 +15,8 @@ class CollapsibleBox(QWidget):
                 background-color: #2196F3;
                 color: white;
                 border: none;
-                padding: 5px;
+                padding: 10px;
+                font-size: 16px;
             }
             QPushButton:checked {
                 background-color: #1976D2;
@@ -72,12 +73,12 @@ class RegexToggleLineEdit(QWidget):
         self.regex_button.setCheckable(True)
         self.regex_button.setIcon(QIcon("path/to/regex_icon.png"))  # 替換為實際的圖標路徑
         self.regex_button.setToolTip("切換正則表達式模式")
-        self.regex_button.setFixedSize(24, 24)
+        self.regex_button.setFixedSize(30, 30)
         self.regex_button.setStyleSheet("""
             QPushButton {
                 background-color: #E0E0E0;
                 border: none;
-                border-radius: 12px;
+                border-radius: 15px;
             }
             QPushButton:checked {
                 background-color: #4CAF50;

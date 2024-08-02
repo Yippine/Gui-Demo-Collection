@@ -17,7 +17,7 @@ class DirectoryReader:
             elif not self._is_excluded(relative_path, exclude_dirs, is_exclude_dirs_regex):
                 tree.append(f"{indent}{os.path.basename(root)}/")
             else:
-                dirs[:] = []  # 如果目錄被排除,不再遍歷其子目錄
+                dirs[:] = []  # Skip excluded directories
                 continue
 
             sub_indent = '│   ' * level + '├── '

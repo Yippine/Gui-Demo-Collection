@@ -145,56 +145,44 @@ class FileProcessorGUI:
             return False
         return True
 
-    def process_files(self):
-        directory = self.root_dir.get()
-        if not directory:
-            self.log_text.insert(tk.END, "請選擇專案目錄。\n")
-            return
+    def process_files(self):  
+        directory = self.root_dir.get()  
+        if not directory:  
+            self.log_text.insert(tk.END, "請選擇專案目錄。\n")  
+            return  
 
-        def process():
-            self.log_text.delete("1.0", tk.END)
-            self.result_text.delete("1.0", tk.END)
-            self.log_text.insert(tk.END, "處理中...\n")
+        def process():  
+            self.log_text.delete("1.0", tk.END)  
+            self.result_text.delete("1.0", tk.END)  
+            self.log_text.insert(tk.END, "處理中...\n")  
 
-            result = []
-            for root, dirs, files in os.walk(directory, topdown=True):
-                root_path = Path(root)
-                if not self.should_process_directory(root_path):
-                    dirs[:] = []  # 清空子目錄列表，阻止遍歷
-                    continue
-                for file in sorted(files):
-                    file_path = root_path / file
-                    if self.should_process_file(file_path):
-                        if self.is_text_file(file_path):
-                            try:
-                                with open(file_path, "r", encoding="utf-8") as f:
-                                    content = f.read().strip()
-                                    if content:
-                                        relative_path = os.path.relpath(
-                                            file_path, directory
-                                        )
-                                        result.append(
-                                            f'{relative_path}:\n"""{content}"""\n'
-                                        )
-                                        self.log_text.insert(
-                                            tk.END, f"處理文件: {relative_path}\n"
-                                        )
-                            except UnicodeDecodeError:
-                                self.log_text.insert(
-                                    tk.END, f"警告: 無法以 UTF-8 解碼 {file_path}\n"
-                                )
-                            except Exception as e:
-                                self.log_text.insert(
-                                    tk.END, f"錯誤: 處理 {file_path} 時發生問題: {e}\n"
-                                )
-                        else:
-                            self.log_text.insert(tk.END, f"跳過非文本文件: {file_path}\n")
-                    else:
-                        self.log_text.insert(tk.END, f"排除文件: {file_path}\n")
+            result = []  
+            for root, dirs, files in os.walk(directory, topdown=True):  
+                root_path = Path(root)  
+                if not self.should_process_directory(root_path):  
+                    dirs[:] = []  # 清空子目錄列表，阻止遍歷  
+                    continue  
+                for file in sorted(files):  
+                    file_path = root_path / file  
+                    if self.should_process_file(file_path):  
+                        if self.is_text_file(file_path):  
+                            try:  
+                                with open(file_path, "r", encoding="utf-8", errors='ignore') as f:  
+                                    content = f.read().strip()  
+                                    if content:  
+                                        relative_path = os.path.relpath(file_path, directory)  
+                                        result.append(f'{relative_path}:\n"""{content}"""\n\n')  
+                                        self.log_text.insert(tk.END, f"處理文件: {relative_path}\n")  
+                            except Exception as e:  
+                                self.log_text.insert(tk.END, f"錯誤: 處理 {file_path} 時發生問題: {e}\n")  
+                        else:  
+                            self.log_text.insert(tk.END, f"跳過非文本文件: {file_path}\n")  
+                    else:  
+                        self.log_text.insert(tk.END, f"排除文件: {file_path}\n")  
 
-            # 將結果顯示在結果框中
-            self.result_text.insert(tk.END, "\n".join(result))
-            self.log_text.insert(tk.END, "處理完成\n")
+            # 將結果顯示在結果框中  
+            self.result_text.insert(tk.END, "".join(result))  
+            self.log_text.insert(tk.END, "處理完成\n")  
 
         threading.Thread(target=process, daemon=True).start()
 
@@ -205,8 +193,7 @@ class FileProcessorGUI:
     def copy_output(self):
         self.master.clipboard_clear()
         self.master.clipboard_append(self.result_text.get("1.0", tk.END))
-        self.log_text.insert(tk.END, "輸出結果已複製到剪貼板。\n")
-
+        self.log_text.insert(tk.END, "輸出結果已複製到剪貼簿。\n")
 
 if __name__ == "__main__":
     root = tk.Tk()
