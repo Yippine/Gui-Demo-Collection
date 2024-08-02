@@ -13,5 +13,9 @@ setup(
             "file_processor=src.main:main",
         ],
     },
-    python_requires=">=3.7",
+    python_requires=">=3.9",
+    include_package_data=True,
+    package_data={
+        "": ["resources/*.json"],
+    },
 )

@@ -29,14 +29,14 @@ class DirectoryReader:
 
     def _is_excluded(self, name, exclude_list, is_regex):
         if is_regex:
-            return any(re.match(pattern.strip(), name) for pattern in exclude_list)
+            return any(re.match(pattern.strip(), name) for pattern in exclude_list if pattern.strip())
         else:
-            return name in [item.strip() for item in exclude_list]
+            return name in [item.strip() for item in exclude_list if item.strip()]
 
     def _is_included(self, name, include_list, is_regex):
         if not include_list:
             return True
         if is_regex:
-            return any(re.match(pattern.strip(), name) for pattern in include_list)
+            return any(re.match(pattern.strip(), name) for pattern in include_list if pattern.strip())
         else:
-            return name in [item.strip() for item in include_list]
+            return name in [item.strip() for item in include_list if item.strip()]

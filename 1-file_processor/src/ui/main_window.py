@@ -1,5 +1,7 @@
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QTextEdit, QLineEdit, QComboBox, QLabel, QFileDialog, QMessageBox
+from PyQt5.QtWidgets import (QMainWindow, QVBoxLayout, QHBoxLayout, QWidget, QPushButton, 
+                             QTextEdit, QLineEdit, QComboBox, QLabel, QFileDialog, QMessageBox)
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont, QIcon
 from src.ui.custom_widgets import CollapsibleBox, RegexToggleLineEdit
 from src.core.file_processor import FileProcessor
 from src.core.directory_reader import DirectoryReader
@@ -24,7 +26,7 @@ class MainWindow(QMainWindow):
 
         main_layout = QVBoxLayout(central_widget)
 
-        # 頂部控制區
+        # Top control area
         top_controls = QHBoxLayout()
         
         self.project_dir = QLineEdit()
@@ -33,6 +35,7 @@ class MainWindow(QMainWindow):
 
         browse_button = QPushButton("瀏覽")
         browse_button.clicked.connect(self.browse_directory)
+        browse_button.setStyleSheet("background-color: #4CAF50; color: white;")
         top_controls.addWidget(browse_button)
 
         self.language_selector = QComboBox()
@@ -43,7 +46,7 @@ class MainWindow(QMainWindow):
 
         main_layout.addLayout(top_controls)
 
-        # 可折疊的設置區
+        # Collapsible settings area
         settings_box = CollapsibleBox("設置")
         settings_layout = QVBoxLayout()
 
@@ -65,35 +68,41 @@ class MainWindow(QMainWindow):
         settings_box.setContentLayout(settings_layout)
         main_layout.addWidget(settings_box)
 
-        # 按鈕區
+        # Button area
         button_layout = QHBoxLayout()
         read_dir_button = QPushButton("讀取目錄")
         read_dir_button.clicked.connect(self.read_directory)
+        read_dir_button.setStyleSheet("background-color: #008CBA; color: white;")
         button_layout.addWidget(read_dir_button)
 
         read_code_button = QPushButton("讀取程式")
         read_code_button.clicked.connect(self.read_code)
+        read_code_button.setStyleSheet("background-color: #008CBA; color: white;")
         button_layout.addWidget(read_code_button)
 
         main_layout.addLayout(button_layout)
 
-        # 結果顯示區
+        # Result display area
         self.result_text = QTextEdit()
         self.result_text.setReadOnly(True)
+        self.result_text.setFont(QFont("Courier", 10))
         main_layout.addWidget(self.result_text)
 
-        # 底部按鈕區
+        # Bottom button area
         bottom_buttons = QHBoxLayout()
         clear_button = QPushButton("清空結果")
         clear_button.clicked.connect(self.clear_result)
+        clear_button.setStyleSheet("background-color: #f44336; color: white;")
         bottom_buttons.addWidget(clear_button)
 
         copy_button = QPushButton("複製結果")
         copy_button.clicked.connect(self.copy_result)
+        copy_button.setStyleSheet("background-color: #555555; color: white;")
         bottom_buttons.addWidget(copy_button)
 
         save_button = QPushButton("保存結果")
         save_button.clicked.connect(self.save_result)
+        save_button.setStyleSheet("background-color: #555555; color: white;")
         bottom_buttons.addWidget(save_button)
 
         main_layout.addLayout(bottom_buttons)
@@ -154,7 +163,14 @@ class MainWindow(QMainWindow):
             self.exclude_files.is_regex(),
             self.include_files.is_regex()
         )
-        self.result_text.setPlainText(result)
+        prompt = f"""
+{result.rstrip()}
+
+請以業界的最佳實現來完美修復，並重複審視，排除所有潛在的漏洞、風險和臭蟲。  
+提供新增或異動過的應用目錄名稱、檔案名稱、程式內容；  
+同時，提供網頁的安裝、建置和運行指令或方式，謝謝。
+"""
+        self.result_text.setPlainText(prompt.lstrip())
 
     def clear_result(self):
         self.result_text.clear()

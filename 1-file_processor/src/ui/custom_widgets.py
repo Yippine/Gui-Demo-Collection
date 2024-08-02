@@ -10,6 +10,17 @@ class CollapsibleBox(QWidget):
         self.toggle_button.setCheckable(True)
         self.toggle_button.setChecked(False)
         self.toggle_button.clicked.connect(self.on_toggle)
+        self.toggle_button.setStyleSheet("""
+            QPushButton {
+                background-color: #2196F3;
+                color: white;
+                border: none;
+                padding: 5px;
+            }
+            QPushButton:checked {
+                background-color: #1976D2;
+            }
+        """)
 
         self.toggle_animation = QParallelAnimationGroup(self)
 
@@ -59,9 +70,19 @@ class RegexToggleLineEdit(QWidget):
 
         self.regex_button = QPushButton()
         self.regex_button.setCheckable(True)
-        self.regex_button.setIcon(QIcon("path/to/regex_icon.png"))  # 請替換為實際的圖標路徑
+        self.regex_button.setIcon(QIcon("path/to/regex_icon.png"))  # 替換為實際的圖標路徑
         self.regex_button.setToolTip("切換正則表達式模式")
         self.regex_button.setFixedSize(24, 24)
+        self.regex_button.setStyleSheet("""
+            QPushButton {
+                background-color: #E0E0E0;
+                border: none;
+                border-radius: 12px;
+            }
+            QPushButton:checked {
+                background-color: #4CAF50;
+            }
+        """)
         self.layout.addWidget(self.regex_button)
 
     def text(self):
