@@ -9,6 +9,7 @@ File Processor 2.0 是一個強大的文件處理工具,可以幫助開發者快
 - 可自定義包含文件
 - 直觀的圖形用戶界面
 - 實時處理和顯示結果
+- 支持正則表達式匹配
 
 ## 安裝
 
@@ -22,9 +23,20 @@ File Processor 2.0 是一個強大的文件處理工具,可以幫助開發者快
    cd file-processor-2.0
    ```
 
-3. 安裝依賴:
+3. 創建並激活虛擬環境:
+   ```
+   python -m venv venv
+   source venv/bin/activate  # 在 Windows 上使用 venv\Scripts\activate
+   ```
+
+4. 安裝依賴:
    ```
    pip install -r requirements.txt
+   ```
+
+5. 安裝項目:
+   ```
+   pip install -e .
    ```
 
 ## 使用方法
@@ -39,7 +51,7 @@ File Processor 2.0 是一個強大的文件處理工具,可以幫助開發者快
    - 選擇程式語言
    - 自定義排除目錄和文件(可選)
    - 自定義包含文件(可選)
-   - 點擊"處理文件"按鈕
+   - 點擊"讀取目錄"或"讀取程式"按鈕
 
 3. 查看處理結果和日誌
 

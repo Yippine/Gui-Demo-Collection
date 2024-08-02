@@ -1,14 +1,12 @@
-import tkinter as tk
-from tkinter import ttk
-from gui.main_window import FileProcessorGUI
-from gui.styles import setup_styles
+import sys
+from PyQt5.QtWidgets import QApplication
+from src.ui.main_window import MainWindow
 
 def main():
-    root = tk.Tk()
-    root.title("File Processor 2.2")
-    setup_styles(root)
-    app = FileProcessorGUI(root)
-    root.mainloop()
+    app = QApplication(sys.argv)
+    main_window = MainWindow()
+    main_window.show()
+    sys.exit(app.exec_())
 
 if __name__ == "__main__":
     main()

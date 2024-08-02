@@ -1,73 +1,42 @@
 import os
-from pathlib import Path
-
+import re
 
 class DirectoryReader:
-    def __init__(
-        self,
-        root_dir,
-        exclude_dirs,
-        exclude_files,
-        exclude_dirs_regex,
-        exclude_files_regex,
-    ):
-        self.root_dir = Path(root_dir)
-        self.exclude_dirs = exclude_dirs
-        self.exclude_files = exclude_files
-        self.exclude_dirs_regex = exclude_dirs_regex
-        self.exclude_files_regex = exclude_files_regex
+    def __init__(self):
+        pass
 
-    def read_directory(self):
-        return self._get_directory_structure(self.root_dir)
-
-    def _get_directory_structure(self, directory):
-        result = []
-        items = sorted(directory.iterdir(), key=lambda x: (x.is_file(), x.name.lower()))
-
-        for i, item in enumerate(items):
-            is_last = i == len(items) - 1
-            prefix = "└── " if is_last else "├── "
-
-            if item.is_dir():
-                if self._should_process_directory(item):
-                    result.append(f"{prefix}{item.name}/")
-                    child_prefix = "    " if is_last else "│   "
-                    result.extend(
-                        [
-                            f"{child_prefix}{child}"
-                            for child in self._get_directory_structure(item)
-                        ]
-                    )
+    def read_directory(self, project_dir, exclude_dirs, exclude_files, include_files, is_exclude_dirs_regex, is_exclude_files_regex, is_include_files_regex):
+        tree = []
+        for root, dirs, files in os.walk(project_dir):
+            level = root.replace(project_dir, '').count(os.sep)
+            indent = '│   ' * (level - 1) + '├── ' if level > 0 else ''
+            relative_path = os.path.relpath(root, project_dir)
+            
+            if level == 0:
+                tree.append(os.path.basename(project_dir))
+            elif not self._is_excluded(relative_path, exclude_dirs, is_exclude_dirs_regex):
+                tree.append(f"{indent}{os.path.basename(root)}/")
             else:
-                if self._should_process_file(item):
-                    result.append(f"{prefix}{item.name}")
+                dirs[:] = []  # 如果目錄被排除,不再遍歷其子目錄
+                continue
 
-        return result
+            sub_indent = '│   ' * level + '├── '
+            for file in files:
+                if self._is_included(file, include_files, is_include_files_regex) and not self._is_excluded(file, exclude_files, is_exclude_files_regex):
+                    tree.append(f"{sub_indent}{file}")
 
-    def _should_process_directory(self, dir_path):
-        if self.exclude_dirs_regex:
-            return not any(
-                re.search(pattern.strip(), str(dir_path))
-                for pattern in self.exclude_dirs
-                if pattern.strip()
-            )
+        return "\n".join(tree)
+
+    def _is_excluded(self, name, exclude_list, is_regex):
+        if is_regex:
+            return any(re.match(pattern.strip(), name) for pattern in exclude_list)
         else:
-            return not any(
-                exclude_dir.strip() in dir_path.parts
-                for exclude_dir in self.exclude_dirs
-                if exclude_dir.strip()
-            )
+            return name in [item.strip() for item in exclude_list]
 
-    def _should_process_file(self, file_path):
-        if self.exclude_files_regex:
-            return not any(
-                re.search(pattern.strip(), file_path.name)
-                for pattern in self.exclude_files
-                if pattern.strip()
-            )
+    def _is_included(self, name, include_list, is_regex):
+        if not include_list:
+            return True
+        if is_regex:
+            return any(re.match(pattern.strip(), name) for pattern in include_list)
         else:
-            return file_path.name not in [
-                exclude_file.strip()
-                for exclude_file in self.exclude_files
-                if exclude_file.strip()
-            ]
+            return name in [item.strip() for item in include_list]

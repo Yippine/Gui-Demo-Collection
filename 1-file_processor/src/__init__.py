@@ -1,3 +1,3 @@
-from . import gui
+from . import ui
 from . import core
-from . import config
+from . import utils
